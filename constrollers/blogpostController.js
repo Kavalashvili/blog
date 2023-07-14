@@ -13,3 +13,18 @@ exports.allBlogposts = async function (req, res, next) {
         return res.status(404).json({message: 'No Posts'});
     }
 }
+
+// Display single post
+exports.singleBlogpost = async function (req, res, next) {
+    try {
+        let blogpost = await Blogpost.find({_id: req.params.blogpostid})
+
+        if (!blogpost || blogpost.length === 0) {
+            return res.status(404).json({message:'No post with this id'});
+        }
+        return res.status(200).json({blogpost});
+    }
+    catch(err) {
+        return res.json({message:'Post does not exist'});
+    }
+}
