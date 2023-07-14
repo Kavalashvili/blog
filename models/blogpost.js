@@ -10,7 +10,7 @@ const BlogpostSchema = new Schema({
 
 // virtual for blogpost URL
 BlogpostSchema.virtual('url').get(function () {
-    return `blogpost/${this._id}`;
+    return `/blogpost/${this._id}`;
 })
 
 module.exports = mongoose.model('Blogpost', BlogpostSchema);
