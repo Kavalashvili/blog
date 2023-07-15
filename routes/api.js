@@ -5,6 +5,8 @@ const authorController = require('../controllers/authorController');
 
 router.post('/login', authorController.login);
 
+router.post('/logout', authorController.logout);
+
 router.get('/blogposts', blogpostController.allBlogposts);
 
 router.get('/blogposts/:blogpostid', blogpostController.singleBlogpost);

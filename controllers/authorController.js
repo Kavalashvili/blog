@@ -20,3 +20,7 @@ exports.login = async function ( req, res, next ) {
         res.status(403).json({err});
     }
 }
+
+exports.logout = (req, res, next) => {
+    console.log('logged out')  
+  };
