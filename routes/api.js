@@ -11,4 +11,6 @@ router.get('/blogposts', blogpostController.allBlogposts);
 
 router.get('/blogposts/:blogpostid', blogpostController.singleBlogpost);
 
+router.delete('/blogposts/:blogpostid', blogpostController.deleteBlogpost);
+
 module.exports = router;
