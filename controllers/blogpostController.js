@@ -1,7 +1,11 @@
 const Blogpost = require('../models/blogpost');
+const Author = require('../models/author');
 const Comment = require('../models/comment');
+const { body, validationResult } = require('express-validator');
+
 const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
+const blogpost = require('../models/blogpost');
 
 // Display all posts
 exports.allBlogposts = async function (req, res, next) {
@@ -45,3 +49,36 @@ exports.deleteBlogpost = async function (req, res, next) {
         return next(err);
     }
 }
+
+// Create a blogpost
+exports.createBlogpost = [
+    body('title').trim().isLength({min:1}.withMessage('Add a title')),
+    body('text').trim().isLength({min:1}.withMessage("Add text")),
+
+    async (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                erors: errors.array(),
+                data: req.body
+            })
+        }
+        try {
+            const blogpost = new Blogpost({
+                title: req.body.title,
+                text: req.body.text,
+                author: req.author._id
+            })
+            blogpost.save(err => {
+                if (err) {
+                    return next(err);
+                }
+                console.log('Blogpost saved')
+                res.status(200).json({blogpost, token: req.author});
+            })
+        }
+        catch (err) {
+            res.status(400).json({err});
+        }
+    }
+];

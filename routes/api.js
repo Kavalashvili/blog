@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 const blogpostController = require('../controllers/blogpostController');
 const authorController = require('../controllers/authorController');
+const commentController = require('../controllers/commentController');
 
 router.post('/login', authorController.login);
 
@@ -11,6 +13,8 @@ router.get('/blogposts', blogpostController.allBlogposts);
 
 router.get('/blogposts/:blogpostid', blogpostController.singleBlogpost);
 
-router.delete('/blogposts/:blogpostid', blogpostController.deleteBlogpost);
+router.delete('/blogposts/:blogpostid', passport.authenticate('jwt', {session: false}), blogpostController.deleteBlogpost);
+
+router.post('/blogposts', passport.authenticate('jwt', {session: false}), blogpostController.createBlogpost);
 
 module.exports = router;

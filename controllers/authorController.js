@@ -1,3 +1,7 @@
+const Blogpost = require('../models/blogpost');
+const Author = require('../models/author');
+const Comment = require('../models/comment');
+
 const jwt = require('jsonwebtoken');
 const passport = require('passport')
 const { body, validationResult } = require('express-validator')

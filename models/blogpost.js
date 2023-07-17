@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const BlogpostSchema = new Schema({
-    title: { type: String, required: true },
-    text: { type: String, required: true },
+    title: { type: String, required: true, minLength: 1 },
+    text: { type: String, required: true, minLength: 1 },
     timestamp: { type: Date, default: Date.now },
     isPublished: { type: Boolean, default: false }
 })
