@@ -3,7 +3,6 @@ const Author = require('../models/author');
 const Comment = require('../models/comment');
 const { body, validationResult } = require('express-validator');
 
-const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
 const blogpost = require('../models/blogpost');
 
@@ -38,7 +37,7 @@ exports.singleBlogpost = async function (req, res, next) {
 exports.deleteBlogpost = async function (req, res, next) {
     try {
         let blogpost = await Blogpost.findByIdAndDelete({_id: req.params.blogpostid});
-        if(!blogpsot) {
+        if(!blogpost) {
             return res.status(404).json({err: 'No such blogpost exists'});
         }
         // Remove comments for the blogpost
@@ -52,8 +51,8 @@ exports.deleteBlogpost = async function (req, res, next) {
 
 // Create a blogpost
 exports.createBlogpost = [
-    body('title').trim().isLength({min:1}.withMessage('Add a title')),
-    body('text').trim().isLength({min:1}.withMessage("Add text")),
+    body('title').trim().isLength({min:1}).withMessage('Add a title'),
+    body('text').trim().isLength({min:1}).withMessage("Add text"),
 
     async (req, res, next) => {
         const errors = validationResult(req);
@@ -82,3 +81,20 @@ exports.createBlogpost = [
         }
     }
 ];
+
+// Update blogpost
+exports.updateBlogpost = async (req, res, next) => {
+    try {
+        let blogpost = await Blogpost.findByIdAndUpdate(req.params.blogpostid, {
+            title: req.body.title,
+            text: req.body.text
+        });
+        if (!blogpost) {
+            return res.status(404).json({err: 'No such blogpost exists'});
+        }
+        res.status(200).json({message: 'Blogpost updated', blogpost: blogpost});
+    }
+    catch(err) {
+        return next(err);
+    }
+}

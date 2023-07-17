@@ -17,4 +17,6 @@ router.delete('/blogposts/:blogpostid', passport.authenticate('jwt', {session: f
 
 router.post('/blogposts', passport.authenticate('jwt', {session: false}), blogpostController.createBlogpost);
 
+router.put('/blogposts/:blogpostid/update', passport.authenticate('jwt', {session: false}), blogpostController.updateBlogpost);
+
 module.exports = router;
