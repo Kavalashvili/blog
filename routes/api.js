@@ -19,4 +19,6 @@ router.post('/blogposts', passport.authenticate('jwt', {session: false}), blogpo
 
 router.put('/blogposts/:blogpostid/update', passport.authenticate('jwt', {session: false}), blogpostController.updateBlogpost);
 
+router.get('/blogposts/:blogpostid/comments', commentControler.allComments);
+
 module.exports = router;
