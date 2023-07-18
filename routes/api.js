@@ -19,6 +19,8 @@ router.post('/blogposts', passport.authenticate('jwt', {session: false}), blogpo
 
 router.put('/blogposts/:blogpostid/update', passport.authenticate('jwt', {session: false}), blogpostController.updateBlogpost);
 
-router.get('/blogposts/:blogpostid/comments', commentControler.allComments);
+router.get('/blogposts/:blogpostid/comments', commentController.allComments);
+
+router.post('/blogposts/:blogpostid/comments', passport.authenticate('jwt', {session: false}), commentController.createComment);
 
 module.exports = router;
