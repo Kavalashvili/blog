@@ -23,4 +23,6 @@ router.get('/blogposts/:blogpostid/comments', commentController.allComments);
 
 router.post('/blogposts/:blogpostid/comments', passport.authenticate('jwt', {session: false}), commentController.createComment);
 
+router.delete('/blogposts/:blogpostid/comments/:commentid', passport.authenticate('jwt', {session: false}), commentController.deleteComment);
+
 module.exports = router;

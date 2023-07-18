@@ -1,9 +1,9 @@
 const Blogpost = require('../models/blogpost');
 const Author = require('../models/author');
 const Comment = require('../models/comment');
-
 const { body, validationResult } = require("express-validator");
 
+// Display comments on a post
 exports.allComments = async (req, res, next) => {
     try {
         let comments = await Comment.find({blogpostid: req.params.blogpostid})
@@ -15,6 +15,7 @@ exports.allComments = async (req, res, next) => {
     }
 }
 
+// Create comment
 exports.createComment = [
     body('comment').trim().isLength({min:1}).withMessage('Comment can not be empty'),
     async (req, res, next) => {
@@ -47,3 +48,22 @@ exports.createComment = [
         }
     }
 ];
+
+// Delete a comment
+exports.deleteComment = async (req, res, next) => {
+    try {
+        let comment = await Comment.findByIdAndDelete({_id: req.params.commentid})
+        if (!comment) {
+            return res.status(404).json({message: 'No such comment exists'})
+        }
+        else {
+            let deleteComment = await Blogpost.findOneAndUpdate({
+                _id: req.params.blogpostid
+            })
+        }
+        return res.status(200).json({message: 'Comment deleted', comment: comment, deleteComment})
+    }
+    catch (err) {
+        return next(err);
+    }
+}
