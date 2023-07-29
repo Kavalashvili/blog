@@ -6,6 +6,7 @@ const logger = require('morgan');
 require('dotenv').config();
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 const Author = require('./models/author');
 const bcrypt = require('bcryptjs');
 
@@ -22,6 +23,30 @@ main().catch((err) => console.log(err));
 async function main() {
   await mongoose.connect(mongoDB);
 }
+
+// Set up JWT strategy for Passport
+passport.use(
+  new JwtStrategy(
+    {
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.SECRET_KEY,
+      passReqToCallback: true
+    },
+    async (req, jwtPayload) => {
+      try {
+        const author = await Author.findById(jwtPayload.author._id);
+        if (author) {
+          req.user = author;
+          return author;
+        } else {
+          return null;
+        }
+      } catch (err) {
+        return null;
+      }
+    }
+  )
+);
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {
@@ -65,6 +90,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', apiRouter);
+app.use(passport.initialize());
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
