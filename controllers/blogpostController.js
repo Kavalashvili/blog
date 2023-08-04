@@ -55,8 +55,10 @@ exports.createBlogpost = [
     body('text').trim().isLength({ min: 1 }).withMessage('Add text'),
   
     async (req, res, next) => {
+      console.log('Entering createBlogpost function');
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
+        console.log('Validation errors:', errors.array());
         return res.status(400).json({
           errors: errors.array(),
           data: req.body,
@@ -64,21 +66,22 @@ exports.createBlogpost = [
       }
   
       try {
+        console.log('Creating new blogpost');
         const blogpost = new Blogpost({
           title: req.body.title,
           text: req.body.text,
-          author: req.author._id,
         });
   
         await blogpost.save();
         console.log('Blogpost saved');
-        res.status(200).json({ blogpost, token: req.author });
+        res.status(200).json({ blogpost, token: req.user });
       } catch (err) {
+        console.error('Error saving blogpost:', err);
         return next(err);
       }
     },
   ];
-
+  
 // Update blogpost
 exports.updateBlogpost = async (req, res, next) => {
     try {

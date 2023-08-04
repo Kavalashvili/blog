@@ -32,17 +32,19 @@ passport.use(
       secretOrKey: process.env.SECRET_KEY,
       passReqToCallback: true
     },
-    async (req, jwtPayload) => {
+    async (req, jwtPayload, done) => {
       try {
+        console.log('JWT Payload:', jwtPayload);
         const author = await Author.findById(jwtPayload.author._id);
+        console.log('Author from DB:', author);
         if (author) {
           req.user = author;
-          return author;
+          return done(null, author);
         } else {
-          return null;
+          return done(null, false);
         }
       } catch (err) {
-        return null;
+        return done(err);
       }
     }
   )
