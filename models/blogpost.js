@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const BlogpostSchema = new Schema({
     title: { type: String, required: true, minLength: 1 },
     text: { type: String, required: true, minLength: 1 },
+    comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
     timestamp: { type: Date, default: Date.now },
     isPublished: { type: Boolean, default: false }
 })
