@@ -17,34 +17,35 @@ exports.allComments = async (req, res, next) => {
 
 // Create comment
 exports.createComment = [
-    body('comment').trim().isLength({min:1}).withMessage('Comment can not be empty'),
+    body('comment').trim().isLength({min: 1}).withMessage('Comment cannot be empty'),
     async (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
                 errors: errors.array(),
                 data: req.body
-            })
+            });
         }
         try {
             const comment = new Comment({
                 comment: req.body.comment,
-                author: req.author._id,
+                author: req.body.author,
                 blogpostid: req.params.blogpostid
-            })
-            comment.save(err => {
-                if (err) {
-                    res.status(400),json({err});
-                }
-                res.status(200).json({message: 'Comment saved', comment});
-            })
+            });
+            
+            // Save the comment
+            const savedComment = await comment.save();
+
+            // Update the corresponding blogpost with the comment
             await Blogpost.findOneAndUpdate(
                 {_id: req.params.blogpostid},
-                {$push: {comments: comment}}
-            )
+                {$push: {comments: savedComment._id}}
+            );
+
+            return res.status(200).json({message: 'Comment saved', comment: savedComment});
         }
         catch (err) {
-            res.status(400).json({err})
+            return res.status(400).json({err});
         }
     }
 ];
